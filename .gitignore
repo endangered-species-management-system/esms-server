@@ -1,33 +1,80 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+### IntelliJ/Android Studio ###
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### IntelliJ IDEA ###
-.idea
-*.iws
+# - metadata
+/.idea/
 *.iml
-*.ipr
+
+# - temporary files
+/captures/
+
+# - build output
+/out/
+
+
+### Eclipse ###
+
+# - metadata
+/.settings/
+/.metadata/
+.project
+.classpath
+
+# - build output
+/bin/
+
 
 ### NetBeans ###
-/nbproject/private/
+
+# - metadata
+/nbproject/
+/.nb-gradle/
+
+# - build output
+/build/
 /nbbuild/
 /dist/
 /nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+
 
 ### VS Code ###
+
+# - metadata
 .vscode/
+
+### Gradle ###
+
+# - temporary files
+/.gradle/
+
+# - local properties
+local.properties
+
+
+### Maven ###
+
+# - developer info
+HELP.md
+
+# - build output
+/target/
+
+
+### Derby ###
+
+# - database directory
+/db/
+
+# - log file
+derby.log
+
+### Floobits ###
+
+# - metadata
+.floo
+.flooignore
+
+
+### OS X ###
+
+# - metadata
+.DS_Store
