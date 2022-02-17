@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.esms.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import edu.cnm.deepdive.esms.util.Status;
@@ -9,77 +10,78 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotEmpty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.NonNull;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
+@Entity
+@Table(
+    indexes = {
+        @Index(columnList = "person_id, card_id, created")
+    }
+)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Researcher {
 
-  @NonNull
   @Id
   @GeneratedValue
   @Column(name = "person_id", updatable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
-  @NonNull
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID externalKey;
 
-  @NonNull
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
   private Date created;
 
-  @NonNull
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
   private Date updated;
 
-//  @NotEmpty
-  @Column(unique = true, nullable = false)
+  @NotEmpty
+  @Column(name = "card_id", unique = true, nullable = false)
   private String accessCardID;
 
-  @NonNull
   @OneToOne
   @JoinColumn(name = "person_id")
   private Person person;
 
-  @NonNull
   @Enumerated(EnumType.STRING)
   private Title title;
 
-  @NonNull
   @Enumerated(EnumType.STRING)
   private Status status = Status.ACTIVE;
 
-  @NonNull
   public UUID getId() {
     return id;
   }
 
-  @NonNull
   public UUID getExternalKey() {
     return externalKey;
   }
 
-  @NonNull
   public Date getCreated() {
     return created;
   }
 
-  @NonNull
   public Date getUpdated() {
     return updated;
   }
@@ -92,30 +94,28 @@ public class Researcher {
     this.accessCardID = accessCardID;
   }
 
-  @NonNull
   public Person getPerson() {
     return person;
   }
 
-  public void setPerson(@NonNull Person person) {
+  public void setPerson( Person person) {
     this.person = person;
   }
 
-  @NonNull
   public Title getTitle() {
     return title;
   }
 
-  public void setTitle(@NonNull Title title) {
+  public void setTitle( Title title) {
     this.title = title;
   }
 
-  @NonNull
+  
   public Status getStatus() {
     return status;
   }
 
-  public void setStatus(@NonNull Status status) {
+  public void setStatus( Status status) {
     this.status = status;
   }
 
