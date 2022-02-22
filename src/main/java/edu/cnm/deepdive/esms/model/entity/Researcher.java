@@ -23,6 +23,7 @@ import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -75,8 +76,10 @@ public class Researcher {
   private Status status = Status.ACTIVE;
 
   @ManyToMany(fetch = FetchType.LAZY, mappedBy = "assigned",
-      cascade = CascadeType.MERGE)
-  private Set<Case> cases = new HashSet<>();
+      cascade = {CascadeType.DETACH, CascadeType.MERGE,
+      CascadeType.PERSIST, CascadeType.REFRESH})
+  @OrderBy("number ASC")
+  private Set<SpeciesCase> speciesCases = new HashSet<>();
 
   public UUID getId() {
     return id;
@@ -127,18 +130,17 @@ public class Researcher {
     this.status = status;
   }
 
-  public Set<Case> getCases() {
-    return cases;
+  public Set<SpeciesCase> getCases() {
+    return speciesCases;
   }
 
-  public void setCases(Set<Case> cases) {
-    this.cases = cases;
+  public void setCases(Set<SpeciesCase> aSpeciesCases) {
+    this.speciesCases = aSpeciesCases;
   }
 
-  // TODO debug case parameter name not recognized
-/*boolean addCase(Case case) {
-
-}*/
+  boolean addCase(SpeciesCase aSpeciesCase) {
+    return speciesCases.add(aSpeciesCase);
+  }
 
   @Override
   public boolean equals(Object obj) {
@@ -156,4 +158,5 @@ public class Researcher {
   public int hashCode() {
     return Objects.hash(accessCardID, person);
   }
+
 }

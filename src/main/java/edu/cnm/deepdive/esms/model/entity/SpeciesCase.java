@@ -15,12 +15,16 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
@@ -30,8 +34,13 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @JsonInclude(Include.NON_NULL)
+@Table(
+    indexes = {
+        @Index(columnList = "case_number, created")
+    }
+)
 @Entity
-public class Case {
+public class SpeciesCase {
 
   @Id
   @GeneratedValue
@@ -68,13 +77,18 @@ public class Case {
   @JoinColumn(name = "lead_researcher", nullable = false)
   private Researcher leadResearcher;
 
-  @ManyToMany(cascade = CascadeType.MERGE)
-  @JoinTable(name = "case_researcher",
-      joinColumns = @JoinColumn(name = "case_id", referencedColumnName = "id"),
-      inverseJoinColumns = @JoinColumn(name = "researcher_id", referencedColumnName = "id"))
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
+      CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  @JoinTable(
+      name = "case_researcher",
+      joinColumns = @JoinColumn(name = "case_id"),
+      inverseJoinColumns = @JoinColumn(name = "researcher_id"))
   private Set<Researcher> assigned = new HashSet<>();
 
-  public Case() {
+  @OneToMany(mappedBy = "speciesCase", cascade = CascadeType.PERSIST)
+  private Set<Evidence> evidenceSet = new HashSet<>();
+
+  public SpeciesCase() {
     super();
     this.phase = Phase.SUBMITTED;
   }
@@ -127,11 +141,11 @@ public class Case {
     this.detailedDescription = detailedDescription;
   }
 
-  public Researcher getLeadInvestigator() {
+  public Researcher getLeadResearcher() {
     return leadResearcher;
   }
 
-  public void setLeadInvestigator(Researcher leadInvestigator) {
+  public void setLeadResearcher(Researcher leadInvestigator) {
     this.leadResearcher = leadInvestigator;
   }
 
@@ -139,14 +153,12 @@ public class Case {
     return assigned;
   }
 
- /* public void setAssigned(Set<Researcher> assigned) {
+  public void setAssigned(Set<Researcher> assigned) {
     assigned.forEach(this::addResearcher);
-  }*/
+  }
 
-  // TODO determine why this is not recognized
-  //case is assigned to the researcher, always use this method
-/*  public boolean addResearcher(Researcher researcher) {
+  public boolean addResearcher(Researcher researcher) {
     researcher.addCase(this);
     return assigned.add(researcher);
-  }*/
+  }
 }
