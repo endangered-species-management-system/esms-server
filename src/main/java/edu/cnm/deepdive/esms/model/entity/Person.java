@@ -1,6 +1,8 @@
 package edu.cnm.deepdive.esms.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import java.util.Date;
@@ -21,11 +23,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.NonNull;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
+@JsonInclude(Include.NON_NULL)
 @Entity
 @Table(
     indexes = {
         @Index(columnList = "hireDate"),
-        @Index(columnList = "created")
+        @Index(columnList = "userName")
     }
 )
 public class Person {

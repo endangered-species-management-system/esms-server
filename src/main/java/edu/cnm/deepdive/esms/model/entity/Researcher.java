@@ -7,16 +7,21 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import edu.cnm.deepdive.esms.util.Status;
 import edu.cnm.deepdive.esms.util.Title;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -24,7 +29,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.lang.NonNull;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
@@ -38,7 +42,7 @@ public class Researcher {
 
   @Id
   @GeneratedValue
-  @Column(name = "person_id", updatable = false, columnDefinition = "UUID")
+  @Column(name = "researcher_id", updatable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
@@ -70,6 +74,10 @@ public class Researcher {
   @Enumerated(EnumType.STRING)
   private Status status = Status.ACTIVE;
 
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "assigned",
+      cascade = CascadeType.MERGE)
+  private Set<Case> cases = new HashSet<>();
+
   public UUID getId() {
     return id;
   }
@@ -98,7 +106,7 @@ public class Researcher {
     return person;
   }
 
-  public void setPerson( Person person) {
+  public void setPerson(Person person) {
     this.person = person;
   }
 
@@ -106,18 +114,31 @@ public class Researcher {
     return title;
   }
 
-  public void setTitle( Title title) {
+  public void setTitle(Title title) {
     this.title = title;
   }
 
-  
+
   public Status getStatus() {
     return status;
   }
 
-  public void setStatus( Status status) {
+  public void setStatus(Status status) {
     this.status = status;
   }
+
+  public Set<Case> getCases() {
+    return cases;
+  }
+
+  public void setCases(Set<Case> cases) {
+    this.cases = cases;
+  }
+
+  // TODO debug case parameter name not recognized
+/*boolean addCase(Case case) {
+
+}*/
 
   @Override
   public boolean equals(Object obj) {
