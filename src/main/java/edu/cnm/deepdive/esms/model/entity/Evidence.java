@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -68,6 +69,10 @@ public class Evidence {
   @ManyToOne
   @JoinColumn(nullable = false)
   private SpeciesCase speciesCase;
+
+  @ManyToOne
+  @JoinColumn(nullable = false)
+  private Storage storage;
 
   public UUID getId() {
     return id;
@@ -150,5 +155,13 @@ public class Evidence {
 
   public void setSpeciesCase(SpeciesCase speciesCase) {
     this.speciesCase = speciesCase;
+  }
+
+  public Storage getStorage() {
+    return storage;
+  }
+
+  public void setStorage(Storage storage) {
+    this.storage = storage;
   }
 }

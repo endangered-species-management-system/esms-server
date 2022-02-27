@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -80,6 +81,10 @@ public class Researcher {
       CascadeType.PERSIST, CascadeType.REFRESH})
   @OrderBy("number ASC")
   private Set<SpeciesCase> speciesCases = new HashSet<>();
+
+
+  @OneToMany(mappedBy = "researcher", cascade = CascadeType.PERSIST)
+  private Set<Track> trackSet = new HashSet<>();
 
   public UUID getId() {
     return id;
