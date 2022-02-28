@@ -34,87 +34,103 @@ import org.springframework.lang.NonNull;
 )
 public class Person {
 
+  @NonNull
   @Id
   @GeneratedValue
   @Column(name = "person_id", updatable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
+  @NonNull
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID externalKey;
 
+  @NonNull
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
   private Date hireDate;
 
+  @NonNull
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
   private Date updated;
 
+  @NonNull
   @JsonIgnore
   @Column(nullable = false, updatable = false, unique = true)
   private String oauthKey;
 
+  @NonNull
   @Column(nullable = false, unique = true)
   private String userName;
 
+  @NonNull
   @Column(nullable = false)
   private String firstName;
 
+  @NonNull
   @Column(nullable = false)
   private String lastName;
 
   @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
   private Researcher researcher;
 
+  @NonNull
   public UUID getId() {
     return id;
   }
 
+  @NonNull
   public UUID getExternalKey() {
     return externalKey;
   }
 
+  @NonNull
   public Date getHireDate() {
     return hireDate;
   }
 
+  @NonNull
   public Date getUpdated() {
     return updated;
   }
 
+  @NonNull
   public String getOauthKey() {
     return oauthKey;
   }
 
-  public void setOauthKey(String oauthKey) {
+  public void setOauthKey(@NonNull String oauthKey) {
     this.oauthKey = oauthKey;
   }
 
+  @NonNull
   public String getUserName() {
     return userName;
   }
 
-  public void setUserName(String userName) {
+  public void setUserName(@NonNull String userName) {
     this.userName = userName;
   }
 
+  @NonNull
   public String getFirstName() {
     return firstName;
   }
 
-  public void setFirstName(String firstName) {
+  public void setFirstName(@NonNull String firstName) {
     this.firstName = firstName;
   }
 
+  @NonNull
   public String getLastName() {
     return lastName;
   }
 
-  public void setLastName(String lastName) {
+  public void setLastName(@NonNull String lastName) {
     this.lastName = lastName;
   }
 

@@ -19,19 +19,23 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.NonNull;
 
+@SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 public class Storage {
 
+  @NonNull
   @Id
   @GeneratedValue
   @Column(name = "storage_id", updatable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
+  @NonNull
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID externalKey;
 
+  @NonNull
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
