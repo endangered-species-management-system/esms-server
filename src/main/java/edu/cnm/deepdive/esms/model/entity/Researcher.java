@@ -31,6 +31,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.lang.NonNull;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
@@ -42,21 +43,25 @@ import org.hibernate.annotations.UpdateTimestamp;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Researcher {
 
+  @NonNull
   @Id
   @GeneratedValue
   @Column(name = "researcher_id", updatable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
+  @NonNull
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID externalKey;
 
+  @NonNull
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
   private Date created;
 
+  @NonNull
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
@@ -66,13 +71,16 @@ public class Researcher {
   @Column(name = "card_id", unique = true, nullable = false)
   private String accessCardID;
 
+  @NonNull
   @OneToOne
   @JoinColumn(name = "person_id")
   private Person person;
 
+  @NonNull
   @Enumerated(EnumType.STRING)
   private Title title;
 
+  @NonNull
   @Enumerated(EnumType.STRING)
   private Status status = Status.ACTIVE;
 

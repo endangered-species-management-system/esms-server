@@ -17,6 +17,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
@@ -33,7 +34,6 @@ import org.hibernate.annotations.UpdateTimestamp;
 
 
 @SuppressWarnings("JpaDataSourceORMInspection")
-@JsonInclude(Include.NON_NULL)
 @Table(
     indexes = {
         @Index(columnList = "case_number, created")
@@ -62,11 +62,15 @@ public class SpeciesCase {
   @Column(nullable = false)
   private Date updated;
 
-  @Column(name = "case_number", unique = true, nullable = false)
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name="case_number", unique = true, nullable = false, updatable = false)
   private String number;
 
+  @Column(unique = true, nullable = false)
+  private String speciesName;
+
   @Enumerated(EnumType.STRING)
-  private Phase phase;
+  private Phase phase = Phase.SUBMITTED;
 
   @NotEmpty
   private String summary;
@@ -111,10 +115,6 @@ public class SpeciesCase {
 
   public String getNumber() {
     return number;
-  }
-
-  public void setNumber(String number) {
-    this.number = number;
   }
 
   public Phase getPhase() {
