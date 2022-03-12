@@ -7,12 +7,15 @@ import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import edu.cnm.deepdive.esms.util.Status;
 import edu.cnm.deepdive.esms.util.Title;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -79,6 +82,13 @@ public class Researcher {
   @NonNull
   @Enumerated(EnumType.STRING)
   private Title title;
+// TODO Consider changing to role with an enumset
+
+  @Enumerated(EnumType.STRING)
+  @ElementCollection
+  @CollectionTable(name = "researcher_role", joinColumns = @JoinColumn(name = "researcher_id"))
+  @Column(name = "role")
+  private Set<Title> roles = EnumSet.noneOf(Title.class);
 
   @NonNull
   @Enumerated(EnumType.STRING)
@@ -86,10 +96,9 @@ public class Researcher {
 
   @ManyToMany(fetch = FetchType.LAZY, mappedBy = "assigned",
       cascade = {CascadeType.DETACH, CascadeType.MERGE,
-      CascadeType.PERSIST, CascadeType.REFRESH})
+          CascadeType.PERSIST, CascadeType.REFRESH})
   @OrderBy("number ASC")
   private Set<SpeciesCase> speciesCases = new HashSet<>();
-
 
   @OneToMany(mappedBy = "researcher", cascade = CascadeType.PERSIST)
   private Set<Track> trackSet = new HashSet<>();

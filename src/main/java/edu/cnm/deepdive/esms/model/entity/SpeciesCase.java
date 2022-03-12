@@ -25,12 +25,14 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.lang.NonNull;
 
 
 @SuppressWarnings("JpaDataSourceORMInspection")
@@ -42,12 +44,14 @@ import org.hibernate.annotations.UpdateTimestamp;
 @Entity
 public class SpeciesCase {
 
+  @NonNull
   @Id
   @GeneratedValue
-  @Column(name = "case_id", updatable = false, columnDefinition = "UUID")
+  @Column(name = "case_id", updatable = false, nullable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
+  @NonNull
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID externalKey;
@@ -62,7 +66,7 @@ public class SpeciesCase {
   @Column(nullable = false)
   private Date updated;
 
-  @GeneratedValue(strategy = GenerationType.AUTO)
+
   @Column(name="case_number", unique = true, nullable = false, updatable = false)
   private String number;
 
@@ -77,8 +81,8 @@ public class SpeciesCase {
 
   private String detailedDescription;
 
-  @ManyToOne
-  @JoinColumn(name = "lead_researcher", nullable = false)
+  @ManyToOne(optional = true) // FIXME make non-nullable when appropriate
+  @JoinColumn(name = "lead_researcher", nullable = true)
   private Researcher leadResearcher;
 
   @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
@@ -87,7 +91,7 @@ public class SpeciesCase {
       name = "case_researcher",
       joinColumns = @JoinColumn(name = "case_id"),
       inverseJoinColumns = @JoinColumn(name = "researcher_id"))
-  private Set<Researcher> assigned = new HashSet<>();
+  private final Set<Researcher> assigned = new HashSet<>();
 
   @OneToMany(mappedBy = "speciesCase", cascade = CascadeType.PERSIST)
   private Set<Evidence> evidenceSet = new HashSet<>();
@@ -101,6 +105,7 @@ public class SpeciesCase {
     return id;
   }
 
+  @NonNull
   public UUID getExternalKey() {
     return externalKey;
   }
@@ -115,6 +120,14 @@ public class SpeciesCase {
 
   public String getNumber() {
     return number;
+  }
+
+  public String getSpeciesName() {
+    return speciesName;
+  }
+
+  public void setSpeciesName(String speciesName) {
+    this.speciesName = speciesName;
   }
 
   public Phase getPhase() {
@@ -153,12 +166,9 @@ public class SpeciesCase {
     return assigned;
   }
 
-  public void setAssigned(Set<Researcher> assigned) {
-    assigned.forEach(this::addResearcher);
+  @PrePersist
+  private void setGeneratedValues() {
+    externalKey = UUID.randomUUID();
   }
 
-  public boolean addResearcher(Researcher researcher) {
-    researcher.addCase(this);
-    return assigned.add(researcher);
-  }
 }

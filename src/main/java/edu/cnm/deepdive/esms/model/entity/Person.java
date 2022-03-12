@@ -78,6 +78,8 @@ public class Person {
   @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
   private Researcher researcher;
 
+  // TODO Store the user's roles
+
   @NonNull
   public UUID getId() {
     return id;

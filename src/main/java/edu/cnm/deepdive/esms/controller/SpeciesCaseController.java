@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@Profile("service")
 @RestController
+@Profile("service")
 @RequestMapping("/cases")
 public class SpeciesCaseController {
 
@@ -37,6 +37,7 @@ public class SpeciesCaseController {
         )
         .toUri();
     return ResponseEntity
+//        .ok()
         .created(location)
         .body(speciesCase);
   }
