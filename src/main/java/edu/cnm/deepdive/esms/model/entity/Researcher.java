@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import edu.cnm.deepdive.esms.util.Status;
-import edu.cnm.deepdive.esms.util.Title;
+import edu.cnm.deepdive.esms.util.Role;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -81,14 +81,14 @@ public class Researcher {
 
   @NonNull
   @Enumerated(EnumType.STRING)
-  private Title title;
+  private Role role;
 // TODO Consider changing to role with an enumset
 
   @Enumerated(EnumType.STRING)
   @ElementCollection
   @CollectionTable(name = "researcher_role", joinColumns = @JoinColumn(name = "researcher_id"))
   @Column(name = "role")
-  private Set<Title> roles = EnumSet.noneOf(Title.class);
+  private Set<Role> roles = EnumSet.noneOf(Role.class);
 
   @NonNull
   @Enumerated(EnumType.STRING)
@@ -135,14 +135,18 @@ public class Researcher {
     this.person = person;
   }
 
-  public Title getTitle() {
-    return title;
+  @NonNull
+  public Role getRole() {
+    return role;
   }
 
-  public void setTitle(Title title) {
-    this.title = title;
+  public void setRole(@NonNull Role role) {
+    this.role = role;
   }
 
+  public Set<Role> getRoles() {
+    return roles;
+  }
 
   public Status getStatus() {
     return status;

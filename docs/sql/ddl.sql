@@ -40,7 +40,7 @@ create table researcher
     created       timestamp    not null,
     external_key  UUID         not null,
     status        varchar(255),
-    title         varchar(255),
+    role         varchar(255),
     updated       timestamp    not null,
     person_id     UUID,
     primary key (researcher_id)

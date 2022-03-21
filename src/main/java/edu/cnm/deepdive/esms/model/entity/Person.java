@@ -20,7 +20,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.lang.NonNull;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
@@ -53,10 +52,10 @@ public class Person {
   private Date hireDate;
 
   @NonNull
-  @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
-  private Date updated;
+  @JsonIgnore
+  private Date connected;
 
   @NonNull
   @JsonIgnore
@@ -96,8 +95,12 @@ public class Person {
   }
 
   @NonNull
-  public Date getUpdated() {
-    return updated;
+  public Date getConnected() {
+    return connected;
+  }
+
+  public void setConnected(@NonNull Date connected) {
+    this.connected = connected;
   }
 
   @NonNull
