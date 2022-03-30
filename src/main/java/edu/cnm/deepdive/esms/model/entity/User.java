@@ -16,6 +16,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToOne;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,12 +32,12 @@ import org.springframework.lang.NonNull;
         @Index(columnList = "userName")
     }
 )
-public class Person {
+public class User {
 
   @NonNull
   @Id
   @GeneratedValue
-  @Column(name = "person_id", updatable = false, columnDefinition = "UUID")
+  @Column(name = "user_id", updatable = false, columnDefinition = "UUID")
   @JsonIgnore
   private UUID id;
 
@@ -74,7 +75,7 @@ public class Person {
   @Column(nullable = false)
   private String lastName;
 
-  @OneToOne(mappedBy = "person", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
   private Researcher researcher;
 
   // TODO Store the user's roles
@@ -87,6 +88,10 @@ public class Person {
   @NonNull
   public UUID getExternalKey() {
     return externalKey;
+  }
+
+  public void setExternalKey(@NonNull UUID externalKey) {
+    this.externalKey = externalKey;
   }
 
   @NonNull
@@ -155,10 +160,10 @@ public class Person {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    var person = (Person) o;
-    return Objects.equals(firstName, person.firstName) &&
-        Objects.equals(lastName, person.lastName) &&
-        Objects.equals(hireDate, person.hireDate);
+    var user = (User) o;
+    return Objects.equals(firstName, user.firstName) &&
+        Objects.equals(lastName, user.lastName) &&
+        Objects.equals(hireDate, user.hireDate);
   }
 
   @Override
@@ -168,8 +173,12 @@ public class Person {
 
   @Override
   public String toString() {
-    return String.format("Person[username='%s', firstName='%s', lastName='%s', hiringDate='%s']\n",
+    return String.format("User[username='%s', firstName='%s', lastName='%s', hiringDate='%s']\n",
         userName, firstName, lastName, hireDate == null ? "" : hireDate.toString());
+  }
 
+  @PrePersist
+  private void generateExternalKey() {
+    externalKey = UUID.randomUUID();
   }
 }

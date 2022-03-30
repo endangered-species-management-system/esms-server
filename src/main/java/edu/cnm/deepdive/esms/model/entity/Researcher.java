@@ -28,6 +28,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,7 +41,7 @@ import org.springframework.lang.NonNull;
 @Entity
 @Table(
     indexes = {
-        @Index(columnList = "person_id, card_id, created")
+        @Index(columnList = "user_id, card_id, created")
     }
 )
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -76,8 +77,8 @@ public class Researcher {
 
   @NonNull
   @OneToOne
-  @JoinColumn(name = "person_id")
-  private Person person;
+  @JoinColumn(name = "user_id")
+  private User user;
 
   @NonNull
   @Enumerated(EnumType.STRING)
@@ -127,12 +128,13 @@ public class Researcher {
     this.accessCardID = accessCardID;
   }
 
-  public Person getPerson() {
-    return person;
+  @NonNull
+  public User getUser() {
+    return user;
   }
 
-  public void setPerson(Person person) {
-    this.person = person;
+  public void setUser(@NonNull User user) {
+    this.user = user;
   }
 
   @NonNull
@@ -146,6 +148,10 @@ public class Researcher {
 
   public Set<Role> getRoles() {
     return roles;
+  }
+
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
   }
 
   public Status getStatus() {
@@ -177,12 +183,16 @@ public class Researcher {
       return false;
     }
     Researcher that = (Researcher) obj;
-    return accessCardID.equals(that.accessCardID) && person.equals(that.person);
+    return accessCardID.equals(that.accessCardID) && user.equals(that.user);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(accessCardID, person);
+    return Objects.hash(accessCardID, user);
   }
 
+  @PrePersist
+  private void generateExternalKey() {
+    externalKey = UUID.randomUUID();
+  }
 }

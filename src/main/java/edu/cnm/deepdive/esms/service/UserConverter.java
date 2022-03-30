@@ -1,7 +1,7 @@
-/*
+
 package edu.cnm.deepdive.esms.service;
 
-import edu.cnm.deepdive.esms.model.entity.Person;
+import edu.cnm.deepdive.esms.model.entity.User;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
@@ -12,52 +12,51 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-
-*/
 /**
  * Performs Object-to-String and String-to-Object conversions between model data objects and a
  * String representation of those objects that is suitable for rendering.
- *//*
+ */
 
 
+/*
 @Service
-public class PersonConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
+public class UserConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
+*/
 
-  private final AbstractPersonService service;
+//  private final AbstractUserService service;
 
-
-  */
 /**
-   * Constructor for the {@link AbstractPersonService} class initializes and create objects from
+   * Constructor for the {@link AbstractUserService} class initializes and create objects from
    * included parameter.
    *
-   * @param service
-   *//*
-
+   * @param
+   */
+/*
   @Autowired
-  public PersonConverter(AbstractPersonService service) {
+  public UserConverter(AbstractUserService service) {
     this.service = service;
   }
+*/
 
 
-  @Override
+/*  @Override
   public UsernamePasswordAuthenticationToken convert(Jwt source) {
-    Person person = service.getOrCreate(source.getSubject(), source.getClaimAsString("name"),
+    User user = service.getOrCreate(source.getSubject(), source.getClaimAsString("name")*//*,
         source.getClaimAsString("email"), source.getClaimAsString("given_name"),
-        source.getClaimAsString("family_name"));
-    Collection<SimpleGrantedAuthority> grants = (person.getResearcher() != null)
-        ? person
+        source.getClaimAsString("family_name")*//*);
+    Collection<SimpleGrantedAuthority> grants = (user.getResearcher() != null)
+        ? user
         .getResearcher()
         .getRoles()
         .stream()
         .map((role) -> String.format("ROLE_%s", role.toString().toUpperCase()))
         .collect(Collectors.toList());
-    :new LinkedList<>();
+    : new LinkedList<>();
     grants.add(new SimpleGrantedAuthority("ROLE_USER"));
 
-    return new UsernamePasswordAuthenticationToken(person, source.getTokenValue(), grants);
-  }
-}
+    return new UsernamePasswordAuthenticationToken(user, source.getTokenValue(), grants);
+  }*/
+/*}*/
 
 
-*/
+
