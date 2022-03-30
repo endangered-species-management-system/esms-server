@@ -40,6 +40,12 @@ public class UserService implements AbstractUserService {
         .getPrincipal();
   }
 
+
+  @Override
+  public Iterable<User> getAll() {
+    return repository.getAllByOrderByLastNameAsc();
+  }
+
   @Override
   public User updateUser(User received) {
     return repository

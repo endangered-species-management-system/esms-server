@@ -75,6 +75,7 @@ public class Researcher {
   @Column(name = "card_id", unique = true, nullable = false)
   private String accessCardID;
 
+
   @NonNull
   @OneToOne
   @JoinColumn(name = "user_id")

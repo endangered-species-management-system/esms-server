@@ -9,5 +9,6 @@ public interface AbstractUserService {
   User getCurrentUser();
 
   User updateUser(User received);
-  
+
+  Iterable<User> getAll();
 }

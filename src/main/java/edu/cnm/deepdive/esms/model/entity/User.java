@@ -75,6 +75,7 @@ public class User {
   @Column(nullable = false)
   private String lastName;
 
+  @JsonIgnore
   @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
   private Researcher researcher;
 
