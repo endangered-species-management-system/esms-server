@@ -3,7 +3,6 @@ package edu.cnm.deepdive.esms.service;
 import edu.cnm.deepdive.esms.model.dao.UserRepository;
 import edu.cnm.deepdive.esms.model.entity.User;
 import java.util.Date;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -32,13 +31,13 @@ public class UserService implements AbstractUserService {
         });
   }
 
-  @Override
+ /* @Override
   public User getCurrentUser() {
     return (User) SecurityContextHolder
         .getContext()
         .getAuthentication()
         .getPrincipal();
-  }
+  }*/
 
 
   @Override
@@ -46,7 +45,7 @@ public class UserService implements AbstractUserService {
     return repository.getAllByOrderByLastNameAsc();
   }
 
-  @Override
+/*  @Override
   public User updateUser(User received) {
     return repository
         .findById(getCurrentUser().getId())
@@ -58,5 +57,5 @@ public class UserService implements AbstractUserService {
           return repository.save(user);
         })
         .orElseThrow();
-  }
+  }*/
 }

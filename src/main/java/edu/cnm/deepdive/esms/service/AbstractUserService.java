@@ -6,9 +6,9 @@ public interface AbstractUserService {
 
   User getOrCreate(String oauthKey, String displayName);
 
-  User getCurrentUser();
+/*  User getCurrentUser();*/
 
-  User updateUser(User received);
+//  User updateUser(User received);
 
   Iterable<User> getAll();
 }
