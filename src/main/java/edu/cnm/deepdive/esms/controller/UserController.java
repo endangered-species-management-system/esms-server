@@ -25,20 +25,18 @@ public class UserController {
     this.service = service;
   }
 
-/*  @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
+  @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
   @JsonView(UserView.Private.class)
   public User get() {
     return service.getCurrentUser();
-  }*/
+  }
 
-/*
   @PutMapping(value = "/me",
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-  @JsonView(UserView.Private.class)
+//  @JsonView(UserView.Private.class)
   public User put(@RequestBody User user) {
     return service.updateUser(user);
   }
-*/
 
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Iterable<User> getAll() {

@@ -9,7 +9,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: https://accounts.google.com
-          client-id: 878044594447-nckmut9kmfrkc0joj96uifo5hk0mraeh.apps.googleusercontent.com
+          client-id: 377130366975-rpd6ltckga1vbu5gqumq9ljhf1r44beb.apps.googleusercontent.com
   servlet:
     multipart:
       enabled: true

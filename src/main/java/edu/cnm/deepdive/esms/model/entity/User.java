@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.esms.view.UserView;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,7 +31,7 @@ import org.springframework.lang.NonNull;
 @Table(
     indexes = {
         @Index(columnList = "hireDate"),
-        @Index(columnList = "userName")
+        @Index(columnList = "displayName")
     }
 )
 public class User {
@@ -65,14 +67,15 @@ public class User {
 
   @NonNull
   @Column(nullable = false, unique = true)
-  private String userName;
+  @JsonView(UserView.Public.class)
+  private String displayName;
 
   @NonNull
-  @Column(nullable = false)
+  @Column(nullable = true)
   private String firstName;
 
   @NonNull
-  @Column(nullable = false)
+  @Column(nullable = true)
   private String lastName;
 
   @JsonIgnore
@@ -119,12 +122,12 @@ public class User {
   }
 
   @NonNull
-  public String getUserName() {
-    return userName;
+  public String getDisplayName() {
+    return displayName;
   }
 
-  public void setUserName(@NonNull String userName) {
-    this.userName = userName;
+  public void setDisplayName(@NonNull String userName) {
+    this.displayName = userName;
   }
 
   @NonNull
@@ -175,7 +178,7 @@ public class User {
   @Override
   public String toString() {
     return String.format("User[username='%s', firstName='%s', lastName='%s', hiringDate='%s']\n",
-        userName, firstName, lastName, hireDate == null ? "" : hireDate.toString());
+        displayName, firstName, lastName, hireDate == null ? "" : hireDate.toString());
   }
 
   @PrePersist

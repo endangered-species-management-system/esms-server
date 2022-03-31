@@ -1,12 +1,15 @@
-
 package edu.cnm.deepdive.esms.service;
 
 import edu.cnm.deepdive.esms.model.entity.User;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 /**
@@ -15,45 +18,24 @@ import org.springframework.stereotype.Service;
  */
 
 
-/*
 @Service
 public class UserConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
-*/
 
-//  private final AbstractUserService service;
+  private final AbstractUserService service;
 
-/**
-   * Constructor for the {@link AbstractUserService} class initializes and create objects from
-   * included parameter.
-   *
-   * @param
-   */
-/*
   @Autowired
   public UserConverter(AbstractUserService service) {
     this.service = service;
   }
-*/
 
-
-/*  @Override
+  @Override
   public UsernamePasswordAuthenticationToken convert(Jwt source) {
-    User user = service.getOrCreate(source.getSubject(), source.getClaimAsString("name")*//*,
-        source.getClaimAsString("email"), source.getClaimAsString("given_name"),
-        source.getClaimAsString("family_name")*//*);
-    Collection<SimpleGrantedAuthority> grants = (user.getResearcher() != null)
-        ? user
-        .getResearcher()
-        .getRoles()
-        .stream()
-        .map((role) -> String.format("ROLE_%s", role.toString().toUpperCase()))
-        .collect(Collectors.toList());
-    : new LinkedList<>();
-    grants.add(new SimpleGrantedAuthority("ROLE_USER"));
-
+    Collection<SimpleGrantedAuthority> grants =
+        Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
+    User user = service.getOrCreate(source.getSubject(), source.getClaimAsString("name"));
     return new UsernamePasswordAuthenticationToken(user, source.getTokenValue(), grants);
-  }*/
-/*}*/
+  }
+}
 
 
 
