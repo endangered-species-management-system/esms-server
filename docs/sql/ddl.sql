@@ -1,3 +1,4 @@
+/*
 create table case_researcher
 (
     case_id       UUID not null,
@@ -21,7 +22,7 @@ create table evidence
     storage_storage_id   UUID          not null,
     primary key (evidence_id)
 );
-create table person
+create table user
 (
     person_id    UUID         not null,
     external_key UUID         not null,
@@ -40,7 +41,7 @@ create table researcher
     created       timestamp    not null,
     external_key  UUID         not null,
     status        varchar(255),
-    title         varchar(255),
+    role         varchar(255),
     updated       timestamp    not null,
     person_id     UUID,
     primary key (researcher_id)
@@ -85,13 +86,13 @@ alter table evidence
     add constraint UK_ftqhvul2ydx60qu5ck9js4lyf unique (note);
 alter table evidence
     add constraint UK_ia9t7wcrxp4m65w9m0tfpw2qk unique (evidence_number);
-create index IDXr2q6277xgupbd6jh7upywc026 on person (hire_date);
-create index IDXdllm8el7vyb74m7po97norfah on person (user_name);
-alter table person
+create index IDXr2q6277xgupbd6jh7upywc026 on user (hire_date);
+create index IDXdllm8el7vyb74m7po97norfah on user (user_name);
+alter table user
     add constraint UK_pikwtqn1wplu5o4j6lxfh5jvp unique (external_key);
-alter table person
+alter table user
     add constraint UK_412nyh4cp80cscaorp5rlbh0i unique (oauth_key);
-alter table person
+alter table user
     add constraint UK_e76i3q6dk7y68q7vpkobc71tx unique (user_name);
 create index IDX974ynpm22ayx8f8bxe3xylmr0 on researcher (person_id, card_id, created);
 alter table researcher
@@ -116,10 +117,11 @@ alter table evidence
 alter table evidence
     add constraint FK4qt2dmi8xn3wsgiv0g0vraf8u foreign key (storage_storage_id) references storage;
 alter table researcher
-    add constraint FK7j3dcxeohmkbb89hcm5jr3amh foreign key (person_id) references person;
+    add constraint FK7j3dcxeohmkbb89hcm5jr3amh foreign key (person_id) references user;
 alter table species_case
     add constraint FK5teiisfemvyya2w6ibmigae5k foreign key (lead_researcher) references researcher;
 alter table track
     add constraint FK20idlxdgcsd6ry0jyrgwwc1dj foreign key (track_evidence) references evidence;
 alter table track
     add constraint FK9qy2mk1535nb8v27ty25u8m4l foreign key (track_researcher) references researcher;
+*/
