@@ -26,9 +26,10 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
-@JsonInclude(Include.NON_NULL)
+//@JsonInclude(Include.NON_NULL)
 @Entity
 @Table(
+    name = "user_profile",
     indexes = {
         @Index(columnList = "hireDate"),
         @Index(columnList = "displayName")
@@ -62,20 +63,15 @@ public class User {
 
   @NonNull
   @JsonIgnore
-  @Column(nullable = false, updatable = false, unique = true)
+  @Column(nullable = false, updatable = false, unique = true, length = 30)
   private String oauthKey;
 
   @NonNull
-  @Column(nullable = false, unique = true)
-  @JsonView(UserView.Public.class)
+  @Column(nullable = false)
   private String displayName;
 
-  @NonNull
-  @Column(nullable = true)
   private String firstName;
 
-  @NonNull
-  @Column(nullable = true)
   private String lastName;
 
   @JsonIgnore
@@ -130,21 +126,19 @@ public class User {
     this.displayName = userName;
   }
 
-  @NonNull
   public String getFirstName() {
     return firstName;
   }
 
-  public void setFirstName(@NonNull String firstName) {
+  public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
 
-  @NonNull
   public String getLastName() {
     return lastName;
   }
 
-  public void setLastName(@NonNull String lastName) {
+  public void setLastName(String lastName) {
     this.lastName = lastName;
   }
 

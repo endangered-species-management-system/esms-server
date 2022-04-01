@@ -24,7 +24,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @Configuration
 @EnableWebSecurity
 @Profile("service")
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private final Converter<Jwt, ? extends AbstractAuthenticationToken> converter;

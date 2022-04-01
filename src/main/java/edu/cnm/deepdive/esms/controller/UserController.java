@@ -3,6 +3,7 @@ package edu.cnm.deepdive.esms.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.cnm.deepdive.esms.model.entity.User;
 import edu.cnm.deepdive.esms.service.AbstractUserService;
+import edu.cnm.deepdive.esms.service.UserService;
 import edu.cnm.deepdive.esms.view.UserView;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,22 +19,29 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/users")
 public class UserController {
 
-  private final AbstractUserService service;
+  private final UserService service;
 
   @Autowired
-  public UserController(AbstractUserService service) {
+  public UserController(UserService service) {
     this.service = service;
   }
 
   @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
-  @JsonView(UserView.Private.class)
+//  @JsonView(UserView.Private.class)
   public User get() {
     return service.getCurrentUser();
   }
 
+  @GetMapping(value = "/{externalKey}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public User get(@PathVariable UUID externalKey) {
+    return service
+        .getByExternalKey(externalKey)
+        .orElseThrow();
+  }
+
   @PutMapping(value = "/me",
       consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-//  @JsonView(UserView.Private.class)
+  @JsonView(UserView.Private.class)
   public User put(@RequestBody User user) {
     return service.updateUser(user);
   }
