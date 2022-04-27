@@ -1,9 +1,10 @@
 spring:
-  profiles:
-    active: service
   datasource:
     url: jdbc:h2:file:./db/esms
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: update
+  config:
+    activate:
+      on-profile: service

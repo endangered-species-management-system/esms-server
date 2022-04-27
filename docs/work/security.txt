@@ -1,0 +1,2 @@
+- How to give authorities to a particular user? Should that be done by an administrator using a client?
+- Can the two authorization approaches Authorizing HTTP Requests and Using Expression-Based Access Control be used together?

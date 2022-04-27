@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,7 +25,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 @Configuration
 @EnableWebSecurity
 @Profile("service")
-//@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   private final Converter<Jwt, ? extends AbstractAuthenticationToken> converter;
@@ -48,6 +49,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     http
         .authorizeRequests((auth) ->
             auth
+                .antMatchers(HttpMethod.PUT, "/users/*/roles")
+                .hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.PUT, "/users/*/inactive")
+                .hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.PUT, "/users/me/**")
+                .authenticated()
+                .antMatchers(HttpMethod.PUT, "/users/*/**")
+                .hasRole("ADMINISTRATOR")
+                .antMatchers(HttpMethod.POST, "/cases/*/evidences/**")
+                .hasAnyRole("RESEARCHER", "LEAD")
+                .antMatchers(HttpMethod.PUT, "/cases/*/evidences/**")
+                .hasRole("LEAD")
+                .antMatchers(HttpMethod.DELETE, "/cases/*/evidences/**")
+                .hasRole("LEAD")
+                .antMatchers(HttpMethod.GET, "/cases/*/evidences/**")
+                .hasAnyRole("LEAD", "ADMINISTRATOR", "RESEARCHER")
+                .antMatchers(HttpMethod.POST, "/cases/**")
+                .hasRole("LEAD")
+                .antMatchers(HttpMethod.PUT, "/cases/**")
+                .hasRole("LEAD")
+                .antMatchers(HttpMethod.DELETE, "/cases/**")
+                .hasRole("LEAD")
                 .anyRequest()
                 .authenticated()
         )
