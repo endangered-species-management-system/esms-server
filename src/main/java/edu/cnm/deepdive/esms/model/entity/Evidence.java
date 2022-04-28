@@ -3,15 +3,23 @@ package edu.cnm.deepdive.esms.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import java.util.Date;
+import java.time.Instant;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 import java.util.UUID;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
+import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,9 +32,9 @@ public class Evidence {
 
   @Id
   @GeneratedValue
-  @Column(name = "evidence_id", updatable = false, columnDefinition = "UUID")
+  @Column(name = "evidence_id", updatable = false)
   @JsonIgnore
-  private UUID id;
+  private Long id;
 
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
@@ -35,12 +43,19 @@ public class Evidence {
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
-  private Date created;
+  private Instant created;
 
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
-  private Date updated;
+  private Instant updated;
+
+  @NonNull
+  @Column(name = "image_name", nullable = false, updatable = false)
+  private String name;
+
+  @Column(unique = true)
+  private String location;
 
   @Column(name = "evidence_number", unique = true, nullable = false)
   private String number;
@@ -48,34 +63,16 @@ public class Evidence {
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "NVARCHAR(MAX)")
   private String note;
 
-  @Column(nullable = false, updatable = false)
-  private Boolean archived;
-
-  @Column(nullable = false, updatable = false)
-  private Boolean notImage;
-
-  @NonNull
-  @Column(name = "image_name", nullable = false, updatable = false)
-  private String name;
-
-  @NonNull
-  @JsonIgnore
-  @Column(name = "resource_key", nullable = false, updatable = false)
-  private String key;
-
-  @NonNull
-  @Column(nullable = false, updatable = false)
-  private String contentType;
-
   @ManyToOne
-  @JoinColumn(nullable = false)
+  @JoinColumn(name = "case_id", nullable = false)
   private SpeciesCase speciesCase;
 
-  @ManyToOne
-  @JoinColumn(nullable = false)
-  private Storage storage;
+  @OneToMany(mappedBy = "evidence", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
+  @OrderBy("created DESC")
+  @JsonIgnore
+  private Set<Attachment> attachments = new LinkedHashSet<>();
 
-  public UUID getId() {
+  public long getId() {
     return id;
   }
 
@@ -83,12 +80,30 @@ public class Evidence {
     return externalKey;
   }
 
-  public Date getCreated() {
+  public Instant getCreated() {
     return created;
   }
 
-  public Date getUpdated() {
+  public Instant getUpdated() {
     return updated;
+  }
+
+  @NonNull
+  public String getName() {
+    return name;
+  }
+
+  public void setName(@NonNull String name) {
+    this.name = name;
+  }
+
+
+  public String getLocation() {
+    return location;
+  }
+
+  public void setLocation(String location) {
+    this.location = location;
   }
 
   public String getNumber() {
@@ -107,49 +122,6 @@ public class Evidence {
     this.note = note;
   }
 
-  public Boolean getArchived() {
-    return archived;
-  }
-
-  public void setArchived(Boolean archived) {
-    this.archived = archived;
-  }
-
-  public Boolean getNotImage() {
-    return notImage;
-  }
-
-  public void setNotImage(Boolean notImage) {
-    this.notImage = notImage;
-  }
-
-  @NonNull
-  public String getName() {
-    return name;
-  }
-
-  public void setName(@NonNull String name) {
-    this.name = name;
-  }
-
-  @NonNull
-  public String getKey() {
-    return key;
-  }
-
-  public void setKey(@NonNull String key) {
-    this.key = key;
-  }
-
-  @NonNull
-  public String getContentType() {
-    return contentType;
-  }
-
-  public void setContentType(@NonNull String contentType) {
-    this.contentType = contentType;
-  }
-
   public SpeciesCase getSpeciesCase() {
     return speciesCase;
   }
@@ -158,11 +130,15 @@ public class Evidence {
     this.speciesCase = speciesCase;
   }
 
-  public Storage getStorage() {
-    return storage;
+  public Set<Attachment> getAttachments() {
+    return attachments;
   }
 
-  public void setStorage(Storage storage) {
-    this.storage = storage;
+  @PrePersist
+  private void generateExternalKey() {
+    externalKey = UUID.randomUUID();
   }
+
+  /*@PrePersist
+  private void*/
 }

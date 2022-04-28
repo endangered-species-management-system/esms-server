@@ -1,15 +1,5 @@
 package edu.cnm.deepdive.esms;
 
-import edu.cnm.deepdive.esms.model.dao.ResearcherRepository;
-import edu.cnm.deepdive.esms.model.dao.UserRepository;
-import edu.cnm.deepdive.esms.model.entity.Researcher;
-import edu.cnm.deepdive.esms.model.entity.User;
-import edu.cnm.deepdive.esms.util.Role;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

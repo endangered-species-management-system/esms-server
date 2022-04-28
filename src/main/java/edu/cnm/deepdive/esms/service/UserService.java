@@ -2,6 +2,7 @@ package edu.cnm.deepdive.esms.service;
 
 import edu.cnm.deepdive.esms.model.dao.UserRepository;
 import edu.cnm.deepdive.esms.model.entity.User;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -27,7 +28,7 @@ public class UserService implements AbstractUserService {
           User user = new User();
           user.setOauthKey(oauthKey);
           user.setDisplayName(displayName);
-          user.setConnected(new Date());
+          user.setConnected(Instant.now());
           return repository.save(user);
         });
   }

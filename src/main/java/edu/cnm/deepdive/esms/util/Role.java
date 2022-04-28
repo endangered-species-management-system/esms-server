@@ -2,12 +2,11 @@ package edu.cnm.deepdive.esms.util;
 
 public enum Role {
 
-  INTERN(1),
-  RESEARCHER(2),
-  LEAD(3),
+  RESEARCHER(1),
+  LEAD(2),
   ADMINISTRATOR(4);
 
-  private int code;
+  private final int code;
 
   Role(int code) {
     this.code = code;
