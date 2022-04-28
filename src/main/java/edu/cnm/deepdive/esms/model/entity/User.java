@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.esms.view.UserView;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -24,12 +26,13 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
-@JsonInclude(Include.NON_NULL)
+//@JsonInclude(Include.NON_NULL)
 @Entity
 @Table(
+    name = "user_profile",
     indexes = {
         @Index(columnList = "hireDate"),
-        @Index(columnList = "userName")
+        @Index(columnList = "displayName")
     }
 )
 public class User {
@@ -60,19 +63,15 @@ public class User {
 
   @NonNull
   @JsonIgnore
-  @Column(nullable = false, updatable = false, unique = true)
+  @Column(nullable = false, updatable = false, unique = true, length = 30)
   private String oauthKey;
 
   @NonNull
-  @Column(nullable = false, unique = true)
-  private String userName;
-
-  @NonNull
   @Column(nullable = false)
+  private String displayName;
+
   private String firstName;
 
-  @NonNull
-  @Column(nullable = false)
   private String lastName;
 
   @JsonIgnore
@@ -119,29 +118,27 @@ public class User {
   }
 
   @NonNull
-  public String getUserName() {
-    return userName;
+  public String getDisplayName() {
+    return displayName;
   }
 
-  public void setUserName(@NonNull String userName) {
-    this.userName = userName;
+  public void setDisplayName(@NonNull String userName) {
+    this.displayName = userName;
   }
 
-  @NonNull
   public String getFirstName() {
     return firstName;
   }
 
-  public void setFirstName(@NonNull String firstName) {
+  public void setFirstName(String firstName) {
     this.firstName = firstName;
   }
 
-  @NonNull
   public String getLastName() {
     return lastName;
   }
 
-  public void setLastName(@NonNull String lastName) {
+  public void setLastName(String lastName) {
     this.lastName = lastName;
   }
 
@@ -175,7 +172,7 @@ public class User {
   @Override
   public String toString() {
     return String.format("User[username='%s', firstName='%s', lastName='%s', hiringDate='%s']\n",
-        userName, firstName, lastName, hireDate == null ? "" : hireDate.toString());
+        displayName, firstName, lastName, hireDate == null ? "" : hireDate.toString());
   }
 
   @PrePersist

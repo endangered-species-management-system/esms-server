@@ -12,7 +12,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
   Optional<User> findByExternalKey(UUID externalKey);
 
-  Iterable<User> getAllByOrderByLastNameAsc();
+  Iterable<User> getAllByOrderByDisplayNameAsc();
 
   Optional<User> findByOauthKey(String oauthKey);
 
