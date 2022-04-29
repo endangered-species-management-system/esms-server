@@ -7,9 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SpeciesCaseRepository extends JpaRepository<SpeciesCase, Long> {
+public interface EvidenceRepository extends JpaRepository<SpeciesCase, Long> {
 
-  Iterable<SpeciesCase> getAllByOrderBySpeciesNameAsc();
-
-  Optional<SpeciesCase> findByExternalKey(UUID externalKey);
 }

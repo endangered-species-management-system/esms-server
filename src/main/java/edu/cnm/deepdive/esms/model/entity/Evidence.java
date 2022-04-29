@@ -3,8 +3,7 @@ package edu.cnm.deepdive.esms.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import java.time.Instant;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -17,7 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
@@ -43,12 +41,12 @@ public class Evidence {
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
-  private Instant created;
+  private Date created;
 
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
-  private Instant updated;
+  private Date updated;
 
   @NonNull
   @Column(name = "image_name", nullable = false, updatable = false)
@@ -80,11 +78,11 @@ public class Evidence {
     return externalKey;
   }
 
-  public Instant getCreated() {
+  public Date getCreated() {
     return created;
   }
 
-  public Instant getUpdated() {
+  public Date getUpdated() {
     return updated;
   }
 

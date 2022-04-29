@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import edu.cnm.deepdive.esms.util.Role;
 import java.time.Instant;
+import java.util.Date;
 import java.util.EnumSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -63,7 +64,7 @@ public class User {
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
   @JsonIgnore
-  private Instant connected;
+  private Date connected;
 
   @NonNull
   @JsonIgnore
@@ -81,25 +82,30 @@ public class User {
   private String lastName;
 
   @Enumerated(EnumType.STRING)
-  @ElementCollection
+  @ElementCollection(fetch = FetchType.EAGER)
   @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
   @Column(name = "role")
   private Set<Role> roles = EnumSet.noneOf(Role.class);
 
   private boolean inactive;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
+  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,
       CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinTable(name = "user_case",
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "case_id"))
   @OrderBy("number ASC")
+  @JsonIgnore
   private final List<SpeciesCase> cases = new LinkedList<>();
 
-// TODO Add OneToMany association with species case
+  @OneToMany(mappedBy = "leadResearcher", fetch = FetchType.EAGER)
+  @JsonIgnore
+  @OrderBy("number ASC")
+  private final Set<SpeciesCase> casesLead = new LinkedHashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
-  private Set<Attachment> attachments = new LinkedHashSet<>();
+  @JsonIgnore
+  private final Set<Attachment> attachments = new LinkedHashSet<>();
 
   @NonNull
   public Long getId() {
@@ -116,11 +122,11 @@ public class User {
   }
 
   @NonNull
-  public Instant getConnected() {
+  public Date getConnected() {
     return connected;
   }
 
-  public void setConnected(@NonNull Instant connected) {
+  public void setConnected(@NonNull Date connected) {
     this.connected = connected;
   }
 
@@ -176,6 +182,10 @@ public class User {
 
   public List<SpeciesCase> getCases() {
     return cases;
+  }
+
+  public Set<SpeciesCase> getCasesLead() {
+    return casesLead;
   }
 
   public Set<Attachment> getAttachments() {

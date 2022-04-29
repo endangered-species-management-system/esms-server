@@ -3,7 +3,7 @@ package edu.cnm.deepdive.esms.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import java.time.Instant;
+import java.util.Date;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,7 +37,7 @@ public class Attachment {
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
-  private Instant created;
+  private Date created;
 
   @NonNull
   @Column(name = "attachment_name", nullable = false, updatable = false)
@@ -69,7 +69,7 @@ public class Attachment {
     return externalKey;
   }
 
-  public Instant getCreated() {
+  public Date getCreated() {
     return created;
   }
 

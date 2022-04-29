@@ -1,10 +1,14 @@
 package edu.cnm.deepdive.esms.controller;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import edu.cnm.deepdive.esms.model.entity.Attachment;
 import edu.cnm.deepdive.esms.model.entity.User;
 import edu.cnm.deepdive.esms.service.AbstractUserService;
 import edu.cnm.deepdive.esms.service.UserService;
+import edu.cnm.deepdive.esms.util.Role;
 import edu.cnm.deepdive.esms.view.UserView;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -51,6 +55,14 @@ public class UserController {
     return service.getAll();
   }
 
-  // TODO change the role
+  @PutMapping(value = "/{id}/roles", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public User put(@RequestBody Set<Role> roles, @PathVariable UUID id) {
+    return service.updateRoles(id, roles);
+  }
 
+  @GetMapping(value = "/me/attachments", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Iterable<Attachment> getMyAttachments() {
+    return service
+        .getAttachments(service.getCurrentUser().getExternalKey());
+  }
 }

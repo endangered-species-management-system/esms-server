@@ -4,8 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import edu.cnm.deepdive.esms.util.Phase;
-import java.time.Instant;
-import java.util.HashSet;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -20,7 +19,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -58,12 +56,12 @@ public class SpeciesCase {
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
-  private Instant created;
+  private Date created;
 
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
-  private Instant updated;
+  private Date updated;
 
 
   @Column(name="case_number", unique = true, nullable = false, updatable = false)
@@ -107,11 +105,11 @@ public class SpeciesCase {
     return externalKey;
   }
 
-  public Instant getCreated() {
+  public Date getCreated() {
     return created;
   }
 
-  public Instant getUpdated() {
+  public Date getUpdated() {
     return updated;
   }
 
