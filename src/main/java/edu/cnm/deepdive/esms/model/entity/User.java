@@ -99,7 +99,7 @@ public class User {
   private final List<SpeciesCase> cases = new LinkedList<>();
 
   @OneToMany(mappedBy = "leadResearcher", fetch = FetchType.EAGER)
-  @JsonIgnore
+//  @JsonIgnore
   @OrderBy("number ASC")
   private final Set<SpeciesCase> casesLead = new LinkedHashSet<>();
 

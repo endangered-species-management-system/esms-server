@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.esms.controller;
 
 import edu.cnm.deepdive.esms.model.entity.SpeciesCase;
+import edu.cnm.deepdive.esms.service.AbstractUserService;
 import edu.cnm.deepdive.esms.service.SpeciesCaseService;
 import java.net.URI;
 import java.util.UUID;
@@ -21,15 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 public class SpeciesCaseController {
 
   private final SpeciesCaseService speciesCaseService;
+  private final AbstractUserService userService;
 
-  public SpeciesCaseController(SpeciesCaseService speciesCaseService) {
+  public SpeciesCaseController(SpeciesCaseService speciesCaseService,
+      AbstractUserService userService) {
     this.speciesCaseService = speciesCaseService;
+    this.userService = userService;
   }
 
-//  @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
+  //  @PreAuthorize(value = "hasRole('ROLE_ADMIN')")
   @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
   public ResponseEntity<SpeciesCase> post(@RequestBody SpeciesCase speciesCase) {
-    speciesCase = speciesCaseService.newCase(speciesCase);
+    SpeciesCase newCase =
+        speciesCaseService.addCase(speciesCase, userService.getCurrentUser());
     URI location = WebMvcLinkBuilder
         .linkTo(
             WebMvcLinkBuilder
@@ -38,7 +43,6 @@ public class SpeciesCaseController {
         )
         .toUri();
     return ResponseEntity
-//        .ok()
         .created(location)
         .body(speciesCase);
   }

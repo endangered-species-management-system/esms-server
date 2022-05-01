@@ -71,7 +71,7 @@ public class SpeciesCase {
   private String speciesName;
 
   @Enumerated(EnumType.STRING)
-  private Phase phase = Phase.SUBMITTED;
+  private Phase phase;
 
   @NotEmpty
   private String summary;
@@ -81,6 +81,7 @@ public class SpeciesCase {
   @NonNull
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name = "lead_id", nullable = false)
+  @JsonIgnore
   private User leadResearcher;
 
   @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cases",

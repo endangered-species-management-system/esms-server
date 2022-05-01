@@ -45,7 +45,6 @@ public class UserService implements AbstractUserService {
         .getPrincipal();
   }
 
-
   @Override
   public Iterable<User> getAll() {
     return repository.getAllByOrderByDisplayNameAsc();
