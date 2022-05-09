@@ -4,10 +4,12 @@ import edu.cnm.deepdive.esms.model.entity.User;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -32,6 +34,9 @@ public class UserConverter implements Converter<Jwt, UsernamePasswordAuthenticat
   @Override
   public UsernamePasswordAuthenticationToken convert(Jwt source) {
     User user = service.getOrCreate(source.getSubject(), source.getClaimAsString("name"));
+    if (user.isInactive()) {
+      throw new DisabledException("Account has been deactivated");
+    }
     Collection<SimpleGrantedAuthority> grants =
         Stream
             .concat(

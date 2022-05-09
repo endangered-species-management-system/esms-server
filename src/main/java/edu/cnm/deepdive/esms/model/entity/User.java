@@ -99,8 +99,8 @@ public class User {
   private final List<SpeciesCase> cases = new LinkedList<>();
 
   @OneToMany(mappedBy = "leadResearcher", fetch = FetchType.EAGER)
-//  @JsonIgnore
   @OrderBy("number ASC")
+  @JsonIgnore
   private final Set<SpeciesCase> casesLead = new LinkedHashSet<>();
 
   @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)

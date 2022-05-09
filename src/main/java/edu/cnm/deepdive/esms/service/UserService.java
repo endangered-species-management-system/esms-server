@@ -84,6 +84,17 @@ public class UserService implements AbstractUserService {
   }
 
   @Override
+  public User updateInactive(UUID externalKey, boolean inactive) {
+    return repository
+        .findByExternalKey(externalKey)
+        .map((user) -> {
+          user.setInactive(inactive);
+          return repository.save(user);
+        })
+        .orElseThrow();
+  }
+
+  @Override
   @Transactional
   public Iterable<Attachment> getAttachments(UUID externalKey) {
     return repository

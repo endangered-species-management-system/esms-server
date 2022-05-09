@@ -4,7 +4,7 @@ public enum Role {
 
   RESEARCHER(1),
   LEAD(2),
-  ADMINISTRATOR(4);
+  ADMINISTRATOR(3);
 
   private final int code;
 

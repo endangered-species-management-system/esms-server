@@ -60,6 +60,11 @@ public class UserController {
     return service.updateRoles(id, roles);
   }
 
+  @PutMapping(value = "/{id}/inactive", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public User put(@RequestBody boolean inactive, @PathVariable UUID id) {
+    return service.updateInactive(id, inactive);
+  }
+
   @GetMapping(value = "/me/attachments", produces = MediaType.APPLICATION_JSON_VALUE)
   public Iterable<Attachment> getMyAttachments() {
     return service

@@ -17,6 +17,8 @@ public interface AbstractUserService {
 
   User updateRoles(UUID externalKey, Set<Role> roles);
 
+  User updateInactive(UUID externalKey, boolean inactive);
+
   Iterable<Attachment> getAttachments(UUID externalKey);
 
   User updateInactive(UUID externalKey, Boolean inactive);
