@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,11 +45,21 @@ public class SpeciesCaseController {
         .toUri();
     return ResponseEntity
         .created(location)
-        .body(speciesCase);
+        .body(newCase);
+  }
+
+  @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  public SpeciesCase put(@PathVariable UUID id, @RequestBody SpeciesCase speciesCase) {
+    return speciesCaseService.updateCase(id, speciesCase, userService.getCurrentUser());
   }
 
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
   public SpeciesCase get(@PathVariable UUID id) {
     return speciesCaseService.get(id);
+  }
+
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public Iterable<SpeciesCase> get() {
+    return speciesCaseService.getAllCases();
   }
 }

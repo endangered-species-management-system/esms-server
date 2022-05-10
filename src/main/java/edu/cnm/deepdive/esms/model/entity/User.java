@@ -89,7 +89,7 @@ public class User {
 
   private boolean inactive;
 
-  @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH,
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
       CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
   @JoinTable(name = "user_case",
       joinColumns = @JoinColumn(name = "user_id"),
@@ -98,12 +98,12 @@ public class User {
   @JsonIgnore
   private final List<SpeciesCase> cases = new LinkedList<>();
 
-  @OneToMany(mappedBy = "leadResearcher", fetch = FetchType.EAGER)
+  @OneToMany(mappedBy = "leadResearcher", fetch = FetchType.LAZY)
   @OrderBy("number ASC")
   @JsonIgnore
   private final Set<SpeciesCase> casesLead = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+  @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
   @JsonIgnore
   private final Set<Attachment> attachments = new LinkedHashSet<>();
 

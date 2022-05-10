@@ -15,6 +15,8 @@ public interface AbstractSpeciesCaseService {
    */
   SpeciesCase addCase(SpeciesCase speciesCase, User lead);
 
+  SpeciesCase updateCase(UUID id, SpeciesCase speciesCase, User lead);
+
   /**
    * Deletes this instance of {@link SpeciesCase} from the Database.
    * @param externalKey a unique identifier {@link SpeciesCase} resource.
@@ -30,5 +32,6 @@ public interface AbstractSpeciesCaseService {
    */
   Optional<SpeciesCase> getCase(UUID externalKey, User user);
 
+  Iterable<SpeciesCase> getAllCases();
 }
 

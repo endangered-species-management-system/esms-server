@@ -56,15 +56,16 @@ public class SpeciesCase {
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
+  @JsonProperty(access = Access.READ_ONLY)
   private Date created;
 
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
+  @JsonProperty(access = Access.READ_ONLY)
   private Date updated;
 
-
-  @Column(name="case_number", unique = true, nullable = false, updatable = false)
+  @Column(name = "case_number", unique = true, nullable = false, updatable = false)
   private String number;
 
   @Column(unique = true, nullable = false)
@@ -76,20 +77,22 @@ public class SpeciesCase {
   @NotEmpty
   private String summary;
 
+  @Column(columnDefinition = "TEXT")
   private String detailedDescription;
 
   @NonNull
   @ManyToOne(optional = false, fetch = FetchType.EAGER)
   @JoinColumn(name = "lead_id", nullable = false)
-  @JsonIgnore
   private User leadResearcher;
 
-  @ManyToMany(fetch = FetchType.EAGER, mappedBy = "cases",
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cases",
       cascade = {CascadeType.DETACH, CascadeType.MERGE,
           CascadeType.PERSIST, CascadeType.REFRESH})
+  @JsonIgnore
   private final Set<User> assigned = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "speciesCase", cascade = CascadeType.PERSIST)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "speciesCase", cascade = CascadeType.PERSIST)
+  @JsonIgnore
   private Set<Evidence> evidenceSet = new LinkedHashSet<>();
 
   public SpeciesCase() {
@@ -182,6 +185,8 @@ public class SpeciesCase {
   @PrePersist
   private void setGeneratedValues() {
     externalKey = UUID.randomUUID();
+    number = String.format("%1$s-%2$tY%2$tm%2$td%2$tH%2$tk%2$tM%2$tS",
+        speciesName.replaceAll("\\s+", "-").toLowerCase(), new Date());
   }
 
 }

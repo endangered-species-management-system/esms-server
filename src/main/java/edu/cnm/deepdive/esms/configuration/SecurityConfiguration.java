@@ -75,6 +75,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .hasRole("LEAD")
                 .antMatchers(HttpMethod.DELETE, "/cases/**")
                 .hasRole("LEAD")
+                .antMatchers(HttpMethod.GET, "/cases/**")
+                .hasAnyRole("LEAD", "ADMINISTRATOR", "RESEARCHER")
                 .anyRequest()
                 .authenticated()
         )

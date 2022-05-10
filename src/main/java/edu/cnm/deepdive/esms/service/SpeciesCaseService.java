@@ -30,6 +30,19 @@ public class SpeciesCaseService implements AbstractSpeciesCaseService {
   }
 
   @Override
+  public SpeciesCase updateCase(UUID id, SpeciesCase speciesCase, User lead) {
+    return caseRepository
+        .findByExternalKeyAndLeadResearcher(id, lead)
+        .map((species) -> {
+          species.setPhase(speciesCase.getPhase());
+          species.setSummary(speciesCase.getSummary());
+          species.setDetailedDescription(speciesCase.getDetailedDescription());
+          return caseRepository.save(species);
+        })
+        .orElseThrow();
+  }
+
+  @Override
   public void deleteCase(UUID externalKey, User user) {
 
   }
@@ -37,5 +50,10 @@ public class SpeciesCaseService implements AbstractSpeciesCaseService {
   @Override
   public Optional<SpeciesCase> getCase(UUID externalKey, User user) {
     return Optional.empty();
+  }
+
+  @Override
+  public Iterable<SpeciesCase> getAllCases() {
+    return caseRepository.getAllByOrderBySpeciesNameAsc();
   }
 }
