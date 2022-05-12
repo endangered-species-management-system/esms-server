@@ -3,6 +3,7 @@ package edu.cnm.deepdive.esms.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import edu.cnm.deepdive.esms.model.dao.SpeciesCaseRepository;
 import edu.cnm.deepdive.esms.util.Phase;
 import java.util.Date;
 import java.util.LinkedHashSet;
@@ -41,7 +42,6 @@ import org.springframework.lang.NonNull;
 @Entity
 public class SpeciesCase {
 
-  @NonNull
   @Id
   @GeneratedValue
   @Column(name = "case_id", updatable = false, nullable = false)
@@ -89,9 +89,9 @@ public class SpeciesCase {
   @JsonIgnore
   private final Set<User> assigned = new LinkedHashSet<>();
 
-  @OneToMany(fetch = FetchType.LAZY, mappedBy = "speciesCase", cascade = CascadeType.PERSIST)
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "speciesCase", cascade = CascadeType.ALL, orphanRemoval = true)
   @JsonIgnore
-  private Set<Evidence> evidenceSet = new LinkedHashSet<>();
+  private Set<Evidence> evidences = new LinkedHashSet<>();
 
   public SpeciesCase() {
     super();
@@ -163,16 +163,23 @@ public class SpeciesCase {
     return assigned;
   }
 
+  public Set<Evidence> getEvidences() {
+    return evidences;
+  }
+
   @Override
   public boolean equals(Object obj) {
+    boolean comparison;
+
     if (this == obj) {
-      return true;
+      comparison = true;
+    } else if (obj instanceof SpeciesCase) {
+      SpeciesCase other = (SpeciesCase) obj;
+      comparison = (id != null && id.equals(other.id));
+    } else {
+      comparison = false;
     }
-    if (obj == null || getClass() != obj.getClass()) {
-      return false;
-    }
-    SpeciesCase that = (SpeciesCase) obj;
-    return id.equals(that.id);
+    return comparison;
   }
 
   @Override
@@ -180,11 +187,16 @@ public class SpeciesCase {
     return Objects.hash(id);
   }
 
+  @Override
+  public String toString() {
+    return number;
+  }
+
   @PrePersist
   private void setGeneratedValues() {
     externalKey = UUID.randomUUID();
     number = String.format("%1$s-%2$tY%2$tm%2$td%2$tH%2$tk%2$tM%2$tS",
-        speciesName.replaceAll("\\s+", "-").toLowerCase(), new Date());
+        speciesName.replaceAll("[\\W_]+", "-").toLowerCase(), new Date());
   }
 
 }

@@ -26,7 +26,7 @@ import org.springframework.lang.NonNull;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
-public class Evidence {
+public class Evidence implements Comparable<Evidence> {
 
   @Id
   @GeneratedValue
@@ -62,8 +62,13 @@ public class Evidence {
   private String note;
 
   @ManyToOne
-  @JoinColumn(name = "case_id", nullable = false)
+  @JoinColumn(name = "case_id", nullable = false, updatable = false)
+  @JsonIgnore
   private SpeciesCase speciesCase;
+
+  @ManyToOne
+  @JoinColumn(name = "user_id", nullable = false, updatable = false)
+  private User user;
 
   @OneToMany(mappedBy = "evidence", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST, orphanRemoval = true)
   @OrderBy("created DESC")
@@ -128,15 +133,53 @@ public class Evidence {
     this.speciesCase = speciesCase;
   }
 
+  public User getUser() {
+    return user;
+  }
+
+  public void setUser(User user) {
+    this.user = user;
+  }
+
   public Set<Attachment> getAttachments() {
     return attachments;
   }
 
-  @PrePersist
-  private void generateExternalKey() {
-    externalKey = UUID.randomUUID();
+  @Override
+  public int hashCode() {
+    return (id != null) ? id.hashCode() : 0;
   }
 
-  /*@PrePersist
-  private void*/
+  @Override
+  public boolean equals(Object obj) {
+    boolean comparison;
+
+    if (this == obj) {
+      comparison = true;
+    } else if (obj instanceof Evidence) {
+      Evidence other = (Evidence) obj;
+      comparison = (id != null && id.equals(other.id));
+    } else {
+      comparison = false;
+    }
+    return comparison;
+  }
+
+  @Override
+  public String toString() {
+    return number;
+  }
+
+  @Override
+  public int compareTo(Evidence other) {
+    return number.compareToIgnoreCase(other.number);
+  }
+
+  @PrePersist
+  private void populateAdditionalFields() {
+    externalKey = UUID.randomUUID();
+    number = String.format("%1$s-%2$tY%2$tm%2$td%2$tH%2$tk%2$tM%2$tS",
+        name.replaceAll("[\\W_]+", "-").toLowerCase(), created);
+  }
+
 }
