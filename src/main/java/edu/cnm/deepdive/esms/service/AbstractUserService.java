@@ -23,7 +23,7 @@ public interface AbstractUserService {
 
   User updateInactive(UUID externalKey, Boolean inactive);
 
-  Iterable<User> getAll();
+  Iterable<User> getAll(Role role, boolean forAdmin);
 
   Optional<User> getByExternalKey(UUID externalKey);
 

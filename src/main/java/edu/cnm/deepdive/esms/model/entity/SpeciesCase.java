@@ -85,9 +85,7 @@ public class SpeciesCase {
   @JoinColumn(name = "lead_id", nullable = false)
   private User leadResearcher;
 
-  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cases",
-      cascade = {CascadeType.DETACH, CascadeType.MERGE,
-          CascadeType.PERSIST, CascadeType.REFRESH})
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cases")
   @JsonIgnore
   private final Set<User> assigned = new LinkedHashSet<>();
 

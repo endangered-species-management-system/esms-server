@@ -1,9 +1,12 @@
 package edu.cnm.deepdive.esms.controller;
 
 import edu.cnm.deepdive.esms.model.entity.SpeciesCase;
+import edu.cnm.deepdive.esms.model.entity.User;
 import edu.cnm.deepdive.esms.service.AbstractUserService;
 import edu.cnm.deepdive.esms.service.SpeciesCaseService;
+import edu.cnm.deepdive.esms.util.Role;
 import java.net.URI;
+import java.util.Set;
 import java.util.UUID;
 import org.springframework.context.annotation.Profile;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
@@ -61,5 +64,18 @@ public class SpeciesCaseController {
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Iterable<SpeciesCase> get() {
     return speciesCaseService.getAllCases();
+  }
+
+  @GetMapping(value = "/{id}/team", produces = MediaType.APPLICATION_JSON_VALUE)
+  public Iterable<User> getTeam(@PathVariable UUID id) {
+    return speciesCaseService.getTeam(id);
+  }
+
+  @PutMapping(value = "/{speciesCaseId}/team/{userId}", consumes = MediaType.APPLICATION_JSON_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
+  public boolean setTeamMember(@PathVariable UUID speciesCaseId, @PathVariable UUID userId,
+      @RequestBody boolean inTeam) {
+    return speciesCaseService.setTeamMember(speciesCaseId, userId, inTeam,
+        userService.getCurrentUser());
   }
 }

@@ -24,14 +24,10 @@ public interface AbstractSpeciesCaseService {
    */
   void deleteCase(UUID externalKey, User user);
 
-  /**
-   *  Retrieves the specified {@link SpeciesCase} from the Database.
-   * @param externalKey passed to retrieve this instance from to the Database.
-   * @param user tied to this instance.
-   * @return the specified {@link SpeciesCase}.
-   */
-  Optional<SpeciesCase> getCase(UUID externalKey, User user);
-
   Iterable<SpeciesCase> getAllCases();
+
+  Iterable<User> getTeam(UUID externalKey);
+
+  boolean setTeamMember(UUID speciesCaseExternalKey, UUID userExternalKey, boolean inTeam, User currentUser);
 }
 

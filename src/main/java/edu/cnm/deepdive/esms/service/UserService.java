@@ -46,11 +46,6 @@ public class UserService implements AbstractUserService {
   }
 
   @Override
-  public Iterable<User> getAll() {
-    return repository.getAllByOrderByDisplayNameAsc();
-  }
-
-  @Override
   public Optional<User> getByExternalKey(UUID key) {
     return repository.findByExternalKey(key);
   }
@@ -76,6 +71,9 @@ public class UserService implements AbstractUserService {
     return repository
         .findByExternalKey(externalKey)
         .map((user) -> {
+          if (roles.contains(Role.LEAD)) {
+            roles.add(Role.RESEARCHER);
+          }
           user.getRoles().clear();
           user.getRoles().addAll(roles);
           return repository.save(user);
@@ -112,5 +110,20 @@ public class UserService implements AbstractUserService {
           return repository.save(user);
         })
         .orElseThrow();
+  }
+
+  @Override
+  public Iterable<User> getAll(Role role, boolean forAdmin) {
+    return forAdmin
+        ? (
+        (role != null)
+            ? repository.findByRolesContainingOrderByDisplayNameAsc(role)
+            : repository.getAllByOrderByDisplayNameAsc()
+    )
+        : (
+            (role != null)
+                ? repository.findByRolesContainingAndInactiveOrderByDisplayNameAsc(role, false)
+                : repository.getAllByInactiveOrderByDisplayNameAsc(false)
+        );
   }
 }

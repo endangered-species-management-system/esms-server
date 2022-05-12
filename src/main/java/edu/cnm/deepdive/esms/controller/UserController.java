@@ -3,11 +3,9 @@ package edu.cnm.deepdive.esms.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import edu.cnm.deepdive.esms.model.entity.Attachment;
 import edu.cnm.deepdive.esms.model.entity.User;
-import edu.cnm.deepdive.esms.service.AbstractUserService;
 import edu.cnm.deepdive.esms.service.UserService;
 import edu.cnm.deepdive.esms.util.Role;
 import edu.cnm.deepdive.esms.view.UserView;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -50,9 +49,14 @@ public class UserController {
     return service.updateUser(user);
   }
 
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE, params = {"role"})
+  public Iterable<User> getAll(@RequestParam Role role) {
+    return service.getAll(role, false);
+  }
+
   @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
   public Iterable<User> getAll() {
-    return service.getAll();
+    return service.getAll(null, true);
   }
 
   @PutMapping(value = "/{id}/roles", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
