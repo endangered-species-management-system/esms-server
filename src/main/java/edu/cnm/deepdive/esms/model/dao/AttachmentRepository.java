@@ -12,4 +12,14 @@ import org.springframework.stereotype.Repository;
 public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
 
   Iterable<Attachment> findAllByUserOrderByCreated(User user);
+
+  Iterable<Attachment> findAllByEvidence_SpeciesCase_ExternalKeyAndEvidence_ExternalKeyOrderByName(
+      UUID speciesCaseExternalKey, UUID evidenceExternalKey);
+
+  Optional<Attachment> findByEvidence_SpeciesCase_ExternalKeyAndEvidence_ExternalKeyAndExternalKeyOrderByName(
+      UUID speciesCaseExternalKey, UUID evidenceExternalKey, UUID attachmentExternalKey);
+
+  Optional<Attachment> findByEvidence_SpeciesCase_ExternalKeyAndEvidence_ExternalKeyAndExternalKeyAndEvidence_SpeciesCase_LeadResearcherOrderByName(
+      UUID speciesCaseExternalKey, UUID evidenceExternalKey, UUID attachmentExternalKey, User user);
+
 }

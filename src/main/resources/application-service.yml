@@ -44,6 +44,18 @@ upload:
     - image/png
     - image/tiff
     - image/heic
+    - application/pdf
+    - text/plain
+    - application/msword
+    - application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    - application/vnd.oasis.opendocument.text
+    - application/vnd.ms-excel
+    - application/vnd.openxmlformats-officedocument.wordprocessingml.sheet
+    - application/vnd.oasis.opendocument.spreadsheet
+    - application/vnd.ms-powerpoint
+    - application/vnd.openxmlformats-officedocument.wordprocessingml.presentation
+    - application/vnd.oasis.opendocument.presentation
+
   filename:
     format: "%1$s-%2$d.%3$s"
     randomizerLimit: 1000000

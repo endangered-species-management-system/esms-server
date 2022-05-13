@@ -17,6 +17,6 @@ public interface SpeciesCaseRepository extends JpaRepository<SpeciesCase, Long> 
 
   Optional<SpeciesCase> findByExternalKeyAndLeadResearcher(UUID externalKey, User lead);
 
-  @Query("SELECT s FROM SpeciesCase AS s WHERE s.externalKey = :externalKey AND (s.leadResearcher = :user OR :user IN s.assigned)")
+  @Query("SELECT s FROM SpeciesCase AS s WHERE s.externalKey = :externalKey AND (s.leadResearcher = :user OR :user MEMBER OF s.assigned)")
   Optional<SpeciesCase> findByExternalKeyAndTeamMember(UUID externalKey, User user);
 }

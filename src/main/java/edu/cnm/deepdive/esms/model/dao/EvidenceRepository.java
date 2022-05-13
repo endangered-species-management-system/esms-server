@@ -18,7 +18,7 @@ public interface EvidenceRepository extends JpaRepository<Evidence, Long> {
           + "JOIN e.speciesCase AS s "
           + "WHERE e.externalKey = :evidenceExternalKey "
           + "AND s.externalKey = :speciesExternalKey "
-          + "AND (s.leadResearcher = :user OR :user IN s.assigned)";
+          + "AND (s.leadResearcher = :user OR :user MEMBER OF s.assigned)";
 
   Optional<Evidence> findByExternalKey(UUID externalKey);
 

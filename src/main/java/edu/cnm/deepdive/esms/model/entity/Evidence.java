@@ -49,7 +49,7 @@ public class Evidence implements Comparable<Evidence> {
   private Date updated;
 
   @NonNull
-  @Column(name = "image_name", nullable = false, updatable = false)
+  @Column(name = "evidence_name", nullable = false, updatable = false)
   private String name;
 
   @Column(unique = true)
@@ -75,7 +75,7 @@ public class Evidence implements Comparable<Evidence> {
   @JsonIgnore
   private Set<Attachment> attachments = new LinkedHashSet<>();
 
-  public long getId() {
+  public Long getId() {
     return id;
   }
 

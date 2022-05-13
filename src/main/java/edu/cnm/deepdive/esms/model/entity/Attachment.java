@@ -37,23 +37,32 @@ public class Attachment {
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
+  @JsonProperty(access = Access.READ_ONLY)
   private Date created;
 
-  @NonNull
-  @Column(name = "attachment_name", nullable = false, updatable = false)
-  private String name;
+  @Column(nullable = false, updatable = false)
+  private String title;
+
+  @Column(updatable = false)
+  private String description;
 
   @NonNull
   @Column(nullable = false)
-  private String path;
+  @JsonIgnore
+  private String storageKey;
+
+  @NonNull
+  @Column(name = "file_name", nullable = false, updatable = false)
+  private String name;
 
   @NonNull
   @Column(nullable = false)
   private String mimeType;
 
   @NonNull
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "evidence_id")
+  @JsonIgnore
   private Evidence evidence;
 
   @NonNull
@@ -73,6 +82,14 @@ public class Attachment {
     return created;
   }
 
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
   @NonNull
   public String getName() {
     return name;
@@ -82,13 +99,21 @@ public class Attachment {
     this.name = name;
   }
 
-  @NonNull
-  public String getPath() {
-    return path;
+  public String getDescription() {
+    return description;
   }
 
-  public void setPath(@NonNull String path) {
-    this.path = path;
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @NonNull
+  public String getStorageKey() {
+    return storageKey;
+  }
+
+  public void setStorageKey(@NonNull String path) {
+    this.storageKey = path;
   }
 
   @NonNull
