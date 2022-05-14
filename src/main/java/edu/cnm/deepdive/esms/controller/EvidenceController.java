@@ -40,7 +40,7 @@ public class EvidenceController {
         .linkTo(
             WebMvcLinkBuilder
                 .methodOn(EvidenceController.class)
-                .get(saved.getSpeciesCase().getExternalKey(), saved.getExternalKey())
+                .get(speciesCaseId, saved.getExternalKey())
         )
         .toUri();
     return ResponseEntity

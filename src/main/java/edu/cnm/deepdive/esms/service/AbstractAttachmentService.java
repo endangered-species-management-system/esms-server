@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.esms.service;
 
 import edu.cnm.deepdive.esms.model.entity.Attachment;
+import edu.cnm.deepdive.esms.model.entity.Evidence;
 import edu.cnm.deepdive.esms.model.entity.User;
 import java.io.IOException;
 import java.util.Optional;
@@ -15,6 +16,9 @@ public interface AbstractAttachmentService {
   Optional<Attachment> get(@NonNull UUID speciesCaseExternalKey, UUID evidenceExternalKey,
       UUID attachmentExternalKey);
 
+  Attachment getAttachment(UUID speciesExternalKey, UUID evidenceExternalKey,
+      UUID attachmentExternalKey, User currentUser);
+
   Iterable<Attachment> list(@NonNull UUID speciesCaseExternalKey,
       @NonNull UUID evidenceExternalKey);
 
@@ -24,7 +28,7 @@ public interface AbstractAttachmentService {
   Resource getContent(@NonNull Attachment attachment) throws IOException;
 
   Attachment store(@NonNull MultipartFile file, String title, String description,
-      @NonNull UUID speciesCaseExternalKey,
+       UUID speciesCaseExternalKey,
       UUID evidenceExternalKey, User currentUser)
       throws IOException, HttpMediaTypeException;
 }

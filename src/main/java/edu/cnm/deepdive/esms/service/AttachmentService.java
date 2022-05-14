@@ -11,9 +11,11 @@ import java.util.UUID;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.multipart.MultipartFile;
 
+@Service
 public class AttachmentService implements AbstractAttachmentService {
 
   private static final String UNTITLED_FILENAME = "untitled";
@@ -21,7 +23,6 @@ public class AttachmentService implements AbstractAttachmentService {
   private final AttachmentRepository attachmentRepository;
   private final EvidenceRepository evidenceRepository;
   private final StorageService storageService;
-
 
   public AttachmentService(AttachmentRepository attachmentRepository, EvidenceRepository evidenceRepository,
       StorageService storageService) {
@@ -36,6 +37,12 @@ public class AttachmentService implements AbstractAttachmentService {
     return attachmentRepository
         .findByEvidence_SpeciesCase_ExternalKeyAndEvidence_ExternalKeyAndExternalKeyOrderByName(
             speciesCaseExternalKey, evidenceExternalKey, attachmentExternalKey);
+  }
+
+  @Override
+  public Attachment getAttachment(UUID speciesExternalKey, UUID evidenceExternalKey,
+      UUID attachmentExternalKey, User currentUser) {
+    return null;
   }
 
   @Override
