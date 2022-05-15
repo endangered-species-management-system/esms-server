@@ -15,14 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.lang.NonNull;
 
 @SuppressWarnings("JpaDataSourceORMInspection")
 @Entity
 public class Attachment {
 
-  @NonNull
   @Id
   @GeneratedValue
   @Column(name = "attachment_id", updatable = false)
@@ -34,7 +33,7 @@ public class Attachment {
   @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID externalKey;
 
-  @UpdateTimestamp
+  @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
   @JsonProperty(access = Access.READ_ONLY)

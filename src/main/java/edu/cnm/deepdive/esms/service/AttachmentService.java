@@ -2,7 +2,6 @@ package edu.cnm.deepdive.esms.service;
 
 import edu.cnm.deepdive.esms.model.dao.AttachmentRepository;
 import edu.cnm.deepdive.esms.model.dao.EvidenceRepository;
-import edu.cnm.deepdive.esms.model.dao.UserRepository;
 import edu.cnm.deepdive.esms.model.entity.Attachment;
 import edu.cnm.deepdive.esms.model.entity.User;
 import java.io.IOException;
@@ -24,7 +23,8 @@ public class AttachmentService implements AbstractAttachmentService {
   private final EvidenceRepository evidenceRepository;
   private final StorageService storageService;
 
-  public AttachmentService(AttachmentRepository attachmentRepository, EvidenceRepository evidenceRepository,
+  public AttachmentService(AttachmentRepository attachmentRepository,
+      EvidenceRepository evidenceRepository,
       StorageService storageService) {
     this.attachmentRepository = attachmentRepository;
     this.evidenceRepository = evidenceRepository;
@@ -42,7 +42,9 @@ public class AttachmentService implements AbstractAttachmentService {
   @Override
   public Attachment getAttachment(UUID speciesExternalKey, UUID evidenceExternalKey,
       UUID attachmentExternalKey, User currentUser) {
-    return null;
+    return attachmentRepository.findByEvidence_SpeciesCase_ExternalKeyAndEvidence_ExternalKeyAndExternalKeyAndEvidence_SpeciesCase_LeadResearcherOrderByName(
+            speciesExternalKey, evidenceExternalKey, attachmentExternalKey, currentUser)
+        .orElseThrow();
   }
 
   @Override
@@ -69,7 +71,7 @@ public class AttachmentService implements AbstractAttachmentService {
         });
   }
 
-  public Attachment save(Attachment attachment, @NonNull UUID speciesCaseExternalKey,
+  public Attachment save(Attachment attachment, UUID speciesCaseExternalKey,
       UUID evidenceExternalKey, User currentUser) {
     return evidenceRepository
         .findByExternalKeyAndTeamMember(evidenceExternalKey, speciesCaseExternalKey, currentUser)

@@ -40,6 +40,7 @@ public class Evidence implements Comparable<Evidence> {
 
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
+  @JsonProperty(access = Access.READ_ONLY)
   @Column(nullable = false, updatable = false)
   private Date created;
 
