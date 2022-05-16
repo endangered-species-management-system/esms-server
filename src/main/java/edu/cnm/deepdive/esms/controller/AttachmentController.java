@@ -1,6 +1,7 @@
 package edu.cnm.deepdive.esms.controller;
 
 import edu.cnm.deepdive.esms.model.entity.Attachment;
+import edu.cnm.deepdive.esms.model.entity.Evidence;
 import edu.cnm.deepdive.esms.service.AbstractAttachmentService;
 import edu.cnm.deepdive.esms.service.AbstractEvidenceService;
 import edu.cnm.deepdive.esms.service.AbstractUserService;
@@ -78,13 +79,19 @@ public class AttachmentController {
         userService.getCurrentUser());
   }
 
+  @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+  public Iterable<Attachment> get(@PathVariable UUID speciesCaseId, @PathVariable UUID evidenceId) {
+    return attachmentService
+        .list(speciesCaseId, evidenceId);
+  }
+
   @DeleteMapping("/{attachmentId}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(@PathVariable UUID speciesCaseId, @PathVariable UUID evidenceId,
       @PathVariable UUID attachmentId)
       throws IOException {
     attachmentService.delete(speciesCaseId, evidenceId, attachmentId, userService.getCurrentUser());
-
+    // FIXME 405 error
   }
 
 }
