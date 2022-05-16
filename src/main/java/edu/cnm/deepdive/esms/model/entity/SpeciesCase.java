@@ -1,13 +1,13 @@
 package edu.cnm.deepdive.esms.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
+import edu.cnm.deepdive.esms.model.dao.SpeciesCaseRepository;
 import edu.cnm.deepdive.esms.util.Phase;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
@@ -17,11 +17,9 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -44,12 +42,11 @@ import org.springframework.lang.NonNull;
 @Entity
 public class SpeciesCase {
 
-  @NonNull
   @Id
   @GeneratedValue
-  @Column(name = "case_id", updatable = false, nullable = false, columnDefinition = "UUID")
+  @Column(name = "case_id", updatable = false, nullable = false)
   @JsonIgnore
-  private UUID id;
+  private Long id;
 
   @NonNull
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
@@ -59,49 +56,49 @@ public class SpeciesCase {
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false, updatable = false)
+  @JsonProperty(access = Access.READ_ONLY)
   private Date created;
 
   @UpdateTimestamp
   @Temporal(TemporalType.TIMESTAMP)
   @Column(nullable = false)
+  @JsonProperty(access = Access.READ_ONLY)
   private Date updated;
 
-
-  @Column(name="case_number", unique = true, nullable = false, updatable = false)
+  @Column(name = "case_number", unique = true, nullable = false, updatable = false)
   private String number;
 
   @Column(unique = true, nullable = false)
   private String speciesName;
 
   @Enumerated(EnumType.STRING)
-  private Phase phase = Phase.SUBMITTED;
+  private Phase phase;
 
   @NotEmpty
   private String summary;
 
+  @Column(columnDefinition = "TEXT")
   private String detailedDescription;
 
-  @ManyToOne(optional = true) // FIXME make non-nullable when appropriate
-  @JoinColumn(name = "lead_researcher", nullable = true)
-  private Researcher leadResearcher;
+  @NonNull
+  @ManyToOne(optional = false, fetch = FetchType.EAGER)
+  @JoinColumn(name = "lead_id", nullable = false)
+  private User leadResearcher;
 
-  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
-      CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-  @JoinTable(
-      name = "case_researcher",
-      joinColumns = @JoinColumn(name = "case_id"),
-      inverseJoinColumns = @JoinColumn(name = "researcher_id"))
-  private final Set<Researcher> assigned = new HashSet<>();
+  @ManyToMany(fetch = FetchType.LAZY, mappedBy = "cases")
+  @JsonIgnore
+  private final Set<User> assigned = new LinkedHashSet<>();
 
-  @OneToMany(mappedBy = "speciesCase", cascade = CascadeType.PERSIST)
-  private Set<Evidence> evidenceSet = new HashSet<>();
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "speciesCase", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
+  private Set<Evidence> evidences = new LinkedHashSet<>();
 
   public SpeciesCase() {
     super();
     this.phase = Phase.SUBMITTED;
   }
 
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
@@ -154,21 +151,52 @@ public class SpeciesCase {
     this.detailedDescription = detailedDescription;
   }
 
-  public Researcher getLeadResearcher() {
+  public User getLeadResearcher() {
     return leadResearcher;
   }
 
-  public void setLeadResearcher(Researcher leadInvestigator) {
+  public void setLeadResearcher(User leadInvestigator) {
     this.leadResearcher = leadInvestigator;
   }
 
-  public Set<Researcher> getAssigned() {
+  public Set<User> getAssigned() {
     return assigned;
+  }
+
+  public Set<Evidence> getEvidences() {
+    return evidences;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    boolean comparison;
+
+    if (this == obj) {
+      comparison = true;
+    } else if (obj instanceof SpeciesCase) {
+      SpeciesCase other = (SpeciesCase) obj;
+      comparison = (id != null && id.equals(other.id));
+    } else {
+      comparison = false;
+    }
+    return comparison;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id);
+  }
+
+  @Override
+  public String toString() {
+    return number;
   }
 
   @PrePersist
   private void setGeneratedValues() {
     externalKey = UUID.randomUUID();
+    number = String.format("%1$s-%2$tY%2$tm%2$td%2$tH%2$tk%2$tM%2$tS",
+        speciesName.replaceAll("[\\W_]+", "-").toLowerCase(), new Date());
   }
 
 }

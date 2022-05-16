@@ -1,23 +1,35 @@
 package edu.cnm.deepdive.esms.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonProperty.Access;
-import com.fasterxml.jackson.annotation.JsonView;
-import edu.cnm.deepdive.esms.view.UserView;
+import edu.cnm.deepdive.esms.util.Role;
+import java.time.Instant;
 import java.util.Date;
+import java.util.EnumSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.UUID;
 import javax.persistence.CascadeType;
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderBy;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -31,7 +43,6 @@ import org.springframework.lang.NonNull;
 @Table(
     name = "user_profile",
     indexes = {
-        @Index(columnList = "hireDate"),
         @Index(columnList = "displayName")
     }
 )
@@ -40,20 +51,14 @@ public class User {
   @NonNull
   @Id
   @GeneratedValue
-  @Column(name = "user_id", updatable = false, columnDefinition = "UUID")
+  @Column(name = "user_id", updatable = false)
   @JsonIgnore
-  private UUID id;
+  private Long id;
 
   @NonNull
   @Column(nullable = false, updatable = false, unique = true, columnDefinition = "UUID")
   @JsonProperty(value = "id", access = Access.READ_ONLY)
   private UUID externalKey;
-
-  @NonNull
-  @CreationTimestamp
-  @Temporal(TemporalType.TIMESTAMP)
-  @Column(nullable = false, updatable = false)
-  private Date hireDate;
 
   @NonNull
   @Temporal(TemporalType.TIMESTAMP)
@@ -70,18 +75,40 @@ public class User {
   @Column(nullable = false)
   private String displayName;
 
+  @NonNull
   private String firstName;
 
+  @NonNull
   private String lastName;
 
-  @JsonIgnore
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
-  private Researcher researcher;
+  @Enumerated(EnumType.STRING)
+  @ElementCollection(fetch = FetchType.EAGER)
+  @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+  @Column(name = "role")
+  private Set<Role> roles = EnumSet.noneOf(Role.class);
 
-  // TODO Store the user's roles
+  private boolean inactive;
+
+  @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH,
+      CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+  @JoinTable(name = "user_case",
+      joinColumns = @JoinColumn(name = "user_id"),
+      inverseJoinColumns = @JoinColumn(name = "case_id"))
+  @OrderBy("number ASC")
+  @JsonIgnore
+  private final List<SpeciesCase> cases = new LinkedList<>();
+
+  @OneToMany(mappedBy = "leadResearcher", fetch = FetchType.LAZY)
+  @OrderBy("number ASC")
+  @JsonIgnore
+  private final Set<SpeciesCase> casesLead = new LinkedHashSet<>();
+
+  @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+  @JsonIgnore
+  private final Set<Attachment> attachments = new LinkedHashSet<>();
 
   @NonNull
-  public UUID getId() {
+  public Long getId() {
     return id;
   }
 
@@ -92,11 +119,6 @@ public class User {
 
   public void setExternalKey(@NonNull UUID externalKey) {
     this.externalKey = externalKey;
-  }
-
-  @NonNull
-  public Date getHireDate() {
-    return hireDate;
   }
 
   @NonNull
@@ -142,12 +164,32 @@ public class User {
     this.lastName = lastName;
   }
 
-  public Researcher getResearcher() {
-    return researcher;
+  public Set<Role> getRoles() {
+    return roles;
   }
 
-  public void setResearcher(Researcher researcher) {
-    this.researcher = researcher;
+  public void setRoles(Set<Role> roles) {
+    this.roles = roles;
+  }
+
+  public boolean isInactive() {
+    return inactive;
+  }
+
+  public void setInactive(boolean inactive) {
+    this.inactive = inactive;
+  }
+
+  public List<SpeciesCase> getCases() {
+    return cases;
+  }
+
+  public Set<SpeciesCase> getCasesLead() {
+    return casesLead;
+  }
+
+  public Set<Attachment> getAttachments() {
+    return attachments;
   }
 
   @Override
@@ -160,19 +202,18 @@ public class User {
     }
     var user = (User) o;
     return Objects.equals(firstName, user.firstName) &&
-        Objects.equals(lastName, user.lastName) &&
-        Objects.equals(hireDate, user.hireDate);
+        Objects.equals(lastName, user.lastName);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), firstName, lastName, hireDate);
+    return Objects.hash(super.hashCode(), firstName, lastName);
   }
 
   @Override
   public String toString() {
-    return String.format("User[username='%s', firstName='%s', lastName='%s', hiringDate='%s']\n",
-        displayName, firstName, lastName, hireDate == null ? "" : hireDate.toString());
+    return String.format("User[username='%s', firstName='%s', lastName='%s']\n",
+        displayName, firstName, lastName);
   }
 
   @PrePersist
